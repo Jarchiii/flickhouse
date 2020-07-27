@@ -1,13 +1,28 @@
-import React from 'react';
+import React, {Component} from 'react';
+import Home from './components/Home'
+import Quizz from './components/Quizz'
 
 
-function App() {
-  return (
-    <div className="App">
-      FlickHouse
+export default class App extends Component {
+  state ={
+    componentToLoaded : Home,
+    }
 
-    </div>
-  );
+    action = () => {
+      this.setState({componentToLoaded: Quizz})
+  }
+
+
+
+
+
+  render(){
+        return (
+          <div className="App">
+            { (this.state.componentToLoaded !== 0 &&         
+                  <this.state.componentToLoaded action={this.action}/>
+      )}
+          </div>
+        );
+      }
 }
-
-export default App;
