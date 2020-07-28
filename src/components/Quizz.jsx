@@ -3,8 +3,13 @@ import React, { Component } from 'react'
 
 export class Quizz extends Component {
 state = {
-    actor : null,
-    randomMovieWithThisActor : null
+    actorId : null,
+    actorName : null,
+    actorPhoto : null,
+    randomMovieWithThisActorId : null,
+    randomMovieWithThisActorTitle : null,
+    similarMovie : null
+    
 
 }
 
@@ -20,25 +25,34 @@ GetRandomNumber(min, max){
 // GET A RANDOM ACTOR AND A RANDOM MOVIE with him
 
 getRandomActor(){
-    let randomPage = this.GetRandomNumber(1,10)
-    let randomNumberOne = this.GetRandomNumber(1,20)
-    fetch(`https://api.themoviedb.org/3/person/popular?api_key=f612a1c1b8e8916b830d3e17ec902406&language=en-US&page=${randomPage}`)
-    .then(apiRes => {
-        return apiRes.json()
-    })
-    .then(data => { 
+    let status = null
+        let randomPage = this.GetRandomNumber(1,10)
+     
+        fetch(`https://api.themoviedb.org/3/person/popular?api_key=f612a1c1b8e8916b830d3e17ec902406&language=en-US&page=${randomPage}`)
+        .then(apiRes => {
+            return apiRes.json()
+        })
+        .then(data => { 
+          console.log("actor", data.results)
+          //Keep only the actors
+          var actorsOnly = data.results.filter(element => element.known_for_department=='Acting')
+          let randomNumberOne = this.GetRandomNumber(1,actorsOnly.length-1)
+            this.setState({actorId : actorsOnly[randomNumberOne].id})
+            this.setState({actorName :actorsOnly[randomNumberOne].name })
+            this.setState({actorPhoto :actorsOnly[randomNumberOne].profile_path})
+              this.getMovie(actorsOnly[randomNumberOne].id)
+          })
+         
+        }
+        
+    
 
-    //NEED TO CHECK IF ACTOR 
-
-      this.setState({actor : data.results[randomNumberOne].id})
-        this.getMovie(data.results[randomNumberOne].id)
-    })
 
 
  
-}
 
-// GET A MOVIE WITH THIS ACTOR
+
+// GET A random MOVIE WITH THIS ACTOR
 getMovie(actorId){
    
    fetch(`https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=f612a1c1b8e8916b830d3e17ec902406&language=en-US`)
@@ -52,11 +66,27 @@ getMovie(actorId){
 
        console.log("là",data.cast[randomNumberTwo])
        this.setState({randomMovieWithThisActor : data.cast[randomNumberTwo].id})
+       this.setState({randomMovieWithThisActorTitle : data.cast[randomNumberTwo].title})
+       this.getSimilarMovie(data.cast[randomNumberTwo].id)
+
 
    })
 }
 
 //GET SIMILAR MOVIE
+getSimilarMovie(movieId){
+    if (movieId==null){
+        return null
+    } else {
+    fetch(`https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=f612a1c1b8e8916b830d3e17ec902406&language=en-US&page=1`)
+    .then(apiRes => {
+        return apiRes.json()
+    })
+    .then(data =>{
+        console.log("similarmovie", data)
+    })
+    }
+}
 
 // ASK QUESTION IF THE ACTOR IS IN THE SIMILAR MOVIE
 
@@ -70,8 +100,13 @@ componentDidMount(){
 
     render() {
         return (
-            <div>
+            <div className="QuizzContainer">
                 <h1>Quizz</h1>
+                <div className="actorContainer">
+                    <h3>{this.state.actorName}</h3>
+                    <img src={`https://image.tmdb.org/t/p/w500/${this.state.actorPhoto}`}></img>
+
+                </div>
                 
             </div>
         )
