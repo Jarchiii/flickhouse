@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 export default class Home extends Component {
   beginQuizz = () => {
-    this.props.action();
+    this.props.loadQuizz();
   };
 
   render() {

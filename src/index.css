@@ -66,6 +66,13 @@ img {
   height: 300px;
 }
 
+.quizz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .quizzContainer {
   display: flex;
   flex-direction: column;

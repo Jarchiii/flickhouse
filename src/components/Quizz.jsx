@@ -20,6 +20,9 @@ export class Quizz extends Component {
     score: 0,
     gameOver: false,
   };
+  restartQuizz = () => {
+    this.setState({ gameOver: false, score: 0 });
+  };
 
   //To do
   GetRandomNumber(min, max) {
@@ -228,8 +231,10 @@ export class Quizz extends Component {
     return (
       <div className="quizzContainer">
         {gameOver != true && (
-          <div>
+          <div className="quizz">
             <h1>Quizz</h1>
+            <h4> Score : {this.state.score}</h4>
+
             <div className="wrapContainer">
               <div className="actorContainer">
                 <img
@@ -269,6 +274,9 @@ export class Quizz extends Component {
           <div>
             <h1>Game Over</h1>
             <h3>score : {this.state.score}</h3>
+            <button className="startBtn" onClick={this.restartQuizz}>
+              NEW GAME
+            </button>
           </div>
         )}
       </div>
