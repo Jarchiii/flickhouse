@@ -192,19 +192,28 @@ export class Quizz extends Component {
 
   render() {
     return (
-      <div className="QuizzContainer">
+      <div className="quizzContainer">
         <h1>Quizz</h1>
-        <div className="actorContainer">
-          <h3>{this.state.actorName}</h3>
-          <img
-            src={`https://image.tmdb.org/t/p/w500/${this.state.actorPhoto}`}
-          ></img>
+        <div className="wrapContainer">
+          <div className="actorContainer">
+            <img
+              src={`https://image.tmdb.org/t/p/w500/${this.state.actorPhoto}`}
+            ></img>
+          </div>
+          <div className="movieContainer">
+            <img
+              src={`https://image.tmdb.org/t/p/w500/${this.state.movieDisplayPhoto}`}
+            ></img>
+          </div>
         </div>
-        <div className="movieContainer">
-          <h3>{this.state.movieDisplayTitle}</h3>
-          <img
-            src={`https://image.tmdb.org/t/p/w500/${this.state.movieDisplayPhoto}`}
-          ></img>
+        <div className="question">
+          <h3>
+            Did {this.state.actorName} star in {this.state.movieDisplayTitle} ?
+          </h3>
+          <div className="answer">
+            <button className="startBtn">NO</button>
+            <button className="startBtn">YES</button>
+          </div>
         </div>
       </div>
     );
