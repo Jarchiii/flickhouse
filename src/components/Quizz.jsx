@@ -8,11 +8,15 @@ export class Quizz extends Component {
     randomMovieWithThisActorId: null,
     randomMovieWithThisActorTitle: null,
     randomMovieWithThisActorPhoto: null,
-    similarMovie: null,
-    similarMovieTitle : null,
+    similarMovieId: null,
+    similarMovieTitle: null,
     similarMoviePhoto: null,
-    movieDisplay: null,
-    movieDisplayPhoto: null 
+    randomMovieId: null,
+    randomMovieTitle: null,
+    randomMoviePhoto: null,
+    movieDisplayId: null,
+    movieDisplayTitle: null,
+    movieDisplayPhoto: null,
   };
 
   //To do
@@ -23,7 +27,6 @@ export class Quizz extends Component {
   // GET A RANDOM ACTOR AND A RANDOM MOVIE with him
 
   getRandomActor() {
-    let status = null;
     let randomPage = this.GetRandomNumber(1, 10);
 
     fetch(
@@ -57,17 +60,20 @@ export class Quizz extends Component {
       .then((data) => {
         let randomNumberTwo = this.GetRandomNumber(1, data.cast.length - 1);
         console.log("random", randomNumberTwo);
-        if (data.cast.length>0){
-        console.log("là", data.cast[randomNumberTwo]);
-        this.setState({
-          randomMovieWithThisActor: data.cast[randomNumberTwo].id
-        });
-        this.setState({
-          randomMovieWithThisActorTitle: data.cast[randomNumberTwo].title,
-        });
-        this.setState({randomMovieWithThisActorPhoto : data.cast[randomNumberTwo].poster_path})
-        this.getSimilarMovie(data.cast[randomNumberTwo].id);
-      }
+        if (data.cast.length > 0) {
+          console.log("là", data.cast[randomNumberTwo]);
+          this.setState(
+            {
+              randomMovieWithThisActorId: data.cast[randomNumberTwo].id,
+              randomMovieWithThisActorTitle: data.cast[randomNumberTwo].title,
+              randomMovieWithThisActorPhoto:
+                data.cast[randomNumberTwo].poster_path,
+            },
+            () => {
+              this.getSimilarMovie(data.cast[randomNumberTwo].id);
+            }
+          );
+        }
       });
   }
 
@@ -83,13 +89,95 @@ export class Quizz extends Component {
           return apiRes.json();
         })
         .then((data) => {
-          if (data.results.length>0){
-          console.log("lalalalal", data)
-          let randomNumberThree = this.GetRandomNumber(1, data.results.length - 1);
-          this.setState({similarMovie : data.results[randomNumberThree].id})
-          console.log("similarmovie", data);
-        }
+          if (data.results.length > 0) {
+            console.log("lalalalal", data);
+            let randomNumberThree = this.GetRandomNumber(
+              1,
+              data.results.length - 1
+            );
+            this.setState(
+              {
+                similarMovieId: data.results[randomNumberThree].id,
+                similarMovieTitle: data.results[randomNumberThree].title,
+                similarMoviePhoto: data.results[randomNumberThree].poster_path,
+              },
+              () => {
+                this.displayMovie();
+              }
+            );
+
+            console.log("similarmovie", data);
+          } else {
+            this.displayMovie();
+          }
         });
+    }
+  }
+
+  getRandomMovie() {
+    let randomPage = this.GetRandomNumber(1, 10);
+
+    fetch(
+      `https://api.themoviedb.org/3/movie/popular?api_key=f612a1c1b8e8916b830d3e17ec902406&language=en-US&page=${randomPage}`
+    )
+      .then((apiRes) => {
+        return apiRes.json();
+      })
+      .then((data) => {
+        console.log("random moovie", data);
+        let randomNumberOne = this.GetRandomNumber(0, data.results.length - 1);
+        this.setState(
+          {
+            randomMovieId: data.results[randomNumberOne].id,
+            randomMovieTitle: data.results[randomNumberOne].title,
+            randomMoviePhoto: data.results[randomNumberOne].poster_path,
+          },
+          () => {
+            this.displayMovie();
+          }
+        );
+      });
+  }
+
+  displayMovie() {
+    console.log("display");
+    if (
+      this.state.similarMovie == null &&
+      this.state.randomMovieWithThisActorId == null
+    ) {
+      console.log("displaya");
+
+      this.setState({ movieDisplayId: this.state.randomMovieId });
+      this.setState({ movieDisplayTitle: this.state.randomMovieTitle });
+      this.setState({ movieDisplayPhoto: this.state.randomMoviePhoto });
+    }
+    if (this.state.randomMovieWithThisActorId == null) {
+      console.log("displayb");
+
+      this.setState({ movieDisplayId: this.state.randomMovieId });
+      this.setState({ movieDisplayTitle: this.state.randomMovieTitle });
+      this.setState({ movieDisplayPhoto: this.state.randomMoviePhoto });
+    }
+    if (Math.random() > 0.5) {
+      console.log("displayc");
+
+      this.setState({ movieDisplayId: this.state.randomMovieWithThisActorId });
+      this.setState({
+        movieDisplayTitle: this.state.randomMovieWithThisActorTitle,
+      });
+      this.setState({
+        movieDisplayPhoto: this.state.randomMovieWithThisActorPhoto,
+      });
+    } else {
+      console.log("displayd");
+
+      this.setState({ movieDisplayId: this.state.similarMovieId });
+      this.setState({
+        movieDisplayTitle: this.state.similarMovieTitle,
+      });
+      this.setState({
+        movieDisplayPhoto: this.state.randomMovieWithThisActorPhoto,
+      });
     }
   }
 
@@ -99,6 +187,7 @@ export class Quizz extends Component {
 
   componentDidMount() {
     this.getRandomActor();
+    this.getRandomMovie();
   }
 
   render() {
@@ -110,14 +199,12 @@ export class Quizz extends Component {
           <img
             src={`https://image.tmdb.org/t/p/w500/${this.state.actorPhoto}`}
           ></img>
-
         </div>
         <div className="movieContainer">
-          <h3>{this.state.movieDisplay}</h3>
+          <h3>{this.state.movieDisplayTitle}</h3>
           <img
             src={`https://image.tmdb.org/t/p/w500/${this.state.movieDisplayPhoto}`}
           ></img>
-          
         </div>
       </div>
     );
