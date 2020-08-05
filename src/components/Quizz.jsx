@@ -17,6 +17,8 @@ export class Quizz extends Component {
     movieDisplayId: null,
     movieDisplayTitle: null,
     movieDisplayPhoto: null,
+    score: 0,
+    gameOver: false,
   };
 
   //To do
@@ -73,6 +75,8 @@ export class Quizz extends Component {
               this.getSimilarMovie(data.cast[randomNumberTwo].id);
             }
           );
+        } else {
+          this.displayMovie();
         }
       });
   }
@@ -158,7 +162,7 @@ export class Quizz extends Component {
       this.setState({ movieDisplayTitle: this.state.randomMovieTitle });
       this.setState({ movieDisplayPhoto: this.state.randomMoviePhoto });
     }
-    if (Math.random() > 0.5) {
+    if (Math.random() > 0.3) {
       console.log("displayc");
 
       this.setState({ movieDisplayId: this.state.randomMovieWithThisActorId });
@@ -204,8 +208,10 @@ export class Quizz extends Component {
         }
         if (goodAnswer == answer) {
           console.log("bonne réponse");
+          let newScore = this.state.score + 1;
+          this.setState({ score: newScore });
         } else {
-          console.log("mauvaise réponse");
+          this.setState({ gameOver: true });
         }
         this.getRandomActor();
         this.getRandomMovie();
@@ -218,37 +224,53 @@ export class Quizz extends Component {
   }
 
   render() {
+    let gameOver = this.state.gameOver;
     return (
       <div className="quizzContainer">
-        <h1>Quizz</h1>
-        <div className="wrapContainer">
-          <div className="actorContainer">
-            <img
-              src={`https://image.tmdb.org/t/p/w500/${this.state.actorPhoto}`}
-            ></img>
+        {gameOver != true && (
+          <div>
+            <h1>Quizz</h1>
+            <div className="wrapContainer">
+              <div className="actorContainer">
+                <img
+                  src={`https://image.tmdb.org/t/p/w500/${this.state.actorPhoto}`}
+                ></img>
+              </div>
+              <div className="movieContainer">
+                <img
+                  src={`https://image.tmdb.org/t/p/w500/${this.state.movieDisplayPhoto}`}
+                  alt="./interogation.jpg"
+                ></img>
+              </div>
+            </div>
+            <div className="question">
+              <h3>
+                Did {this.state.actorName} star in{" "}
+                {this.state.movieDisplayTitle} ?
+              </h3>
+              <div className="answer">
+                <button
+                  className="startBtn"
+                  onClick={() => this.checkAnswer(false)}
+                >
+                  NO
+                </button>
+                <button
+                  className="startBtn"
+                  onClick={() => this.checkAnswer(true)}
+                >
+                  YES
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="movieContainer">
-            <img
-              src={`https://image.tmdb.org/t/p/w500/${this.state.movieDisplayPhoto}`}
-            ></img>
+        )}
+        {gameOver == true && (
+          <div>
+            <h1>Game Over</h1>
+            <h3>score : {this.state.score}</h3>
           </div>
-        </div>
-        <div className="question">
-          <h3>
-            Did {this.state.actorName} star in {this.state.movieDisplayTitle} ?
-          </h3>
-          <div className="answer">
-            <button
-              className="startBtn"
-              onClick={() => this.checkAnswer(false)}
-            >
-              NO
-            </button>
-            <button className="startBtn" onClick={() => this.checkAnswer(true)}>
-              YES
-            </button>
-          </div>
-        </div>
+        )}
       </div>
     );
   }
