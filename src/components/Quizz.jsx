@@ -63,7 +63,7 @@ export class Quizz extends Component {
         return apiRes.json();
       })
       .then((data) => {
-        let randomNumberTwo = this.GetRandomNumber(1, data.cast.length - 1);
+        let randomNumberTwo = this.GetRandomNumber(0, data.cast.length - 1);
         console.log("random", randomNumberTwo);
         if (data.cast.length > 0) {
           console.log("là", data.cast[randomNumberTwo]);
@@ -147,27 +147,27 @@ export class Quizz extends Component {
   }
 
   displayMovie() {
-    console.log("display");
     if (
       this.state.similarMovie == null &&
       this.state.randomMovieWithThisActorId == null
     ) {
-      console.log("displaya");
-
       this.setState({ movieDisplayId: this.state.randomMovieId });
       this.setState({ movieDisplayTitle: this.state.randomMovieTitle });
       this.setState({ movieDisplayPhoto: this.state.randomMoviePhoto });
     }
     if (this.state.randomMovieWithThisActorId == null) {
-      console.log("displayb");
+      this.setState({ movieDisplayId: this.state.randomMovieId });
+      this.setState({ movieDisplayTitle: this.state.randomMovieTitle });
+      this.setState({ movieDisplayPhoto: this.state.randomMoviePhoto });
+    }
+    if (this.state.randomMovieWithThisActorPhoto == null) {
+      console.log("this.state.randomMovieWithThisActorPhoto == null");
 
       this.setState({ movieDisplayId: this.state.randomMovieId });
       this.setState({ movieDisplayTitle: this.state.randomMovieTitle });
       this.setState({ movieDisplayPhoto: this.state.randomMoviePhoto });
     }
     if (Math.random() > 0.3) {
-      console.log("displayc");
-
       this.setState({ movieDisplayId: this.state.randomMovieWithThisActorId });
       this.setState({
         movieDisplayTitle: this.state.randomMovieWithThisActorTitle,
@@ -176,14 +176,12 @@ export class Quizz extends Component {
         movieDisplayPhoto: this.state.randomMovieWithThisActorPhoto,
       });
     } else {
-      console.log("displayd");
-
       this.setState({ movieDisplayId: this.state.similarMovieId });
       this.setState({
         movieDisplayTitle: this.state.similarMovieTitle,
       });
       this.setState({
-        movieDisplayPhoto: this.state.randomMovieWithThisActorPhoto,
+        movieDisplayPhoto: this.state.similarMoviePhoto,
       });
     }
   }
@@ -271,7 +269,7 @@ export class Quizz extends Component {
           </div>
         )}
         {gameOver == true && (
-          <div>
+          <div className="gameOver">
             <h1>Game Over</h1>
             <h3>score : {this.state.score}</h3>
             <button className="startBtn" onClick={this.restartQuizz}>
