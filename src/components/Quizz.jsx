@@ -181,9 +181,36 @@ export class Quizz extends Component {
     }
   }
 
-  // ASK QUESTION IF THE ACTOR IS IN THE SIMILAR MOVIE
-
   //CHECK ANSWER
+  checkAnswer(answer) {
+    fetch(
+      `https://api.themoviedb.org/3/person/${this.state.actorId}/movie_credits?api_key=f612a1c1b8e8916b830d3e17ec902406&language=en-US`
+    )
+      .then((apiRes) => {
+        return apiRes.json();
+      })
+      .then((data) => {
+        console.log(data);
+        let movies = [];
+        data.cast.map((movie) => {
+          movies.push(movie.id);
+        });
+        let goodAnswer = false;
+        console.log("movies", movies);
+        console.log("displayMovieid", this.state.movieDisplayId);
+        if (movies.indexOf(this.state.movieDisplayId) >= 0) {
+          goodAnswer = true;
+          console.log("la bonne réponse est", goodAnswer);
+        }
+        if (goodAnswer == answer) {
+          console.log("bonne réponse");
+        } else {
+          console.log("mauvaise réponse");
+        }
+        this.getRandomActor();
+        this.getRandomMovie();
+      });
+  }
 
   componentDidMount() {
     this.getRandomActor();
@@ -211,8 +238,15 @@ export class Quizz extends Component {
             Did {this.state.actorName} star in {this.state.movieDisplayTitle} ?
           </h3>
           <div className="answer">
-            <button className="startBtn">NO</button>
-            <button className="startBtn">YES</button>
+            <button
+              className="startBtn"
+              onClick={() => this.checkAnswer(false)}
+            >
+              NO
+            </button>
+            <button className="startBtn" onClick={() => this.checkAnswer(true)}>
+              YES
+            </button>
           </div>
         </div>
       </div>
