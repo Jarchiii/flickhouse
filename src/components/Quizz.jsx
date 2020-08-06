@@ -49,7 +49,6 @@ export class Quizz extends Component {
         return apiRes.json();
       })
       .then((data) => {
-        console.log("actor", data.results);
         //Keep only the actors
         var actorsOnly = data.results.filter(
           (element) => element.known_for_department == "Acting"
@@ -72,9 +71,7 @@ export class Quizz extends Component {
       })
       .then((data) => {
         let randomNumberTwo = this.GetRandomNumber(0, data.cast.length - 1);
-        console.log("random", randomNumberTwo);
         if (data.cast.length > 0) {
-          console.log("là", data.cast[randomNumberTwo]);
           this.setState(
             {
               randomMovieWithThisActorId: data.cast[randomNumberTwo].id,
@@ -105,7 +102,6 @@ export class Quizz extends Component {
         })
         .then((data) => {
           if (data.results.length > 0) {
-            console.log("lalalalal", data);
             let randomNumberThree = this.GetRandomNumber(
               1,
               data.results.length - 1
@@ -120,8 +116,6 @@ export class Quizz extends Component {
                 this.displayMovie();
               }
             );
-
-            console.log("similarmovie", data);
           } else {
             this.displayMovie();
           }
@@ -139,7 +133,6 @@ export class Quizz extends Component {
         return apiRes.json();
       })
       .then((data) => {
-        console.log("random moovie", data);
         let randomNumberOne = this.GetRandomNumber(0, data.results.length - 1);
         this.setState(
           {
@@ -169,8 +162,6 @@ export class Quizz extends Component {
       this.setState({ movieDisplayPhoto: this.state.randomMoviePhoto });
     }
     if (this.state.randomMovieWithThisActorPhoto == null) {
-      console.log("this.state.randomMovieWithThisActorPhoto == null");
-
       this.setState({ movieDisplayId: this.state.randomMovieId });
       this.setState({ movieDisplayTitle: this.state.randomMovieTitle });
       this.setState({ movieDisplayPhoto: this.state.randomMoviePhoto });
@@ -209,14 +200,10 @@ export class Quizz extends Component {
           movies.push(movie.id);
         });
         let goodAnswer = false;
-        console.log("movies", movies);
-        console.log("displayMovieid", this.state.movieDisplayId);
         if (movies.indexOf(this.state.movieDisplayId) >= 0) {
           goodAnswer = true;
-          console.log("la bonne réponse est", goodAnswer);
         }
         if (goodAnswer == answer) {
-          console.log("bonne réponse");
           let newScore = this.state.score + 1;
           this.setState({ score: newScore });
         } else {
@@ -243,14 +230,24 @@ export class Quizz extends Component {
 
             <div className="wrapContainer">
               <div className="actorContainer">
-                <img
-                  src={`https://image.tmdb.org/t/p/w500/${this.state.actorPhoto}`}
-                ></img>
+                {this.state.actorPhoto !== null && (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500/${this.state.actorPhoto}`}
+                  ></img>
+                )}
+                {this.state.actorPhoto == null && (
+                  <img src="./interogation.jpg"></img>
+                )}
               </div>
               <div className="movieContainer">
-                <img
-                  src={`https://image.tmdb.org/t/p/w500/${this.state.movieDisplayPhoto}`}
-                ></img>
+                {this.state.movieDisplayPhoto !== null && (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500/${this.state.movieDisplayPhoto}`}
+                  ></img>
+                )}
+                {this.state.movieDisplayPhoto == null && (
+                  <img src="./interogation.jpg"></img>
+                )}
               </div>
             </div>
             <div className="question">

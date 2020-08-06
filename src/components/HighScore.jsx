@@ -3,22 +3,27 @@ import highScoreContext from "../context/highScore.js";
 
 function HighScore({ score }) {
   const { highScore, setHighScore } = useContext(highScoreContext);
-  console.log("scorea", highScore);
 
   useEffect(() => {
     let newHighScore = [...highScore];
     let newScore = score;
     newHighScore.push(newScore);
+    newHighScore.sort(function (a, b) {
+      return b - a;
+    });
     setHighScore(newHighScore);
-    console.log("score ap", highScore);
     return () => {};
   }, []);
 
   return (
     <div>
-      High Scores :
-      {highScore.map((score) => {
-        return <div>{score} a</div>;
+      <h5>High Scores : </h5>
+      {highScore.map((score, index) => {
+        return (
+          <div>
+            {index + 1} : {score}
+          </div>
+        );
       })}
     </div>
   );
