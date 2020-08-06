@@ -1,4 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  TwitterShareButton,
+} from "react-share";
+
+import { EmailIcon, FacebookIcon, TwitterIcon } from "react-share";
+import HighScore from "./HighScore.jsx";
 
 export class Quizz extends Component {
   state = {
@@ -242,7 +250,6 @@ export class Quizz extends Component {
               <div className="movieContainer">
                 <img
                   src={`https://image.tmdb.org/t/p/w500/${this.state.movieDisplayPhoto}`}
-                  alt="./interogation.jpg"
                 ></img>
               </div>
             </div>
@@ -270,8 +277,23 @@ export class Quizz extends Component {
         )}
         {gameOver == true && (
           <div className="gameOver">
-            <h1>Game Over</h1>
-            <h3>score : {this.state.score}</h3>
+            <div className="gameOverText">
+              <h1>Game Over</h1>
+              <h3>score : {this.state.score}</h3>
+              <div className="shareBtns">
+                <EmailShareButton>
+                  <EmailIcon />
+                </EmailShareButton>
+                <FacebookShareButton url="https://www.npmjs.com/package/react-share">
+                  <FacebookIcon />
+                </FacebookShareButton>
+                <TwitterShareButton>
+                  <TwitterIcon />
+                </TwitterShareButton>
+              </div>
+              <HighScore score={this.state.score} />
+            </div>
+
             <button className="startBtn" onClick={this.restartQuizz}>
               NEW GAME
             </button>

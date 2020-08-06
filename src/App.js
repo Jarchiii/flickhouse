@@ -1,23 +1,27 @@
-import React, { Component } from "react";
+import React, { useContext, useState } from "react";
 import Home from "./components/Home";
 import Quizz from "./components/Quizz";
+import HighScore from "./context/highScore";
 
-export default class App extends Component {
-  state = {
+function App() {
+  const [ComponentToLoaded, setcomponentToLoaded] = useState({
     componentToLoaded: Home,
-  };
+  });
+  const [highScore, setHighScore] = useState([]);
+  const UserContextValue = { highScore, setHighScore };
 
-  loadQuizz = () => {
-    this.setState({ componentToLoaded: Quizz });
-  };
+  function loadQuizz() {
+    return setcomponentToLoaded({ componentToLoaded: Quizz });
+  }
 
-  render() {
-    return (
+  return (
+    <HighScore.Provider value={UserContextValue}>
       <div className="App">
-        {this.state.componentToLoaded !== 0 && (
-          <this.state.componentToLoaded loadQuizz={this.loadQuizz} />
+        {ComponentToLoaded.componentToLoaded !== 0 && (
+          <ComponentToLoaded.componentToLoaded loadQuizz={loadQuizz} />
         )}
       </div>
-    );
-  }
+    </HighScore.Provider>
+  );
 }
+export default App;
