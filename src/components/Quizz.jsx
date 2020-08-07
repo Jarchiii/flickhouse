@@ -4,7 +4,6 @@ import {
   FacebookShareButton,
   TwitterShareButton,
 } from "react-share";
-import { getRandomActor } from "../factories/factories";
 
 import { EmailIcon, FacebookIcon, TwitterIcon } from "react-share";
 import HighScore from "./HighScore.jsx";
