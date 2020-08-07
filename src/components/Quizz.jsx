@@ -4,10 +4,11 @@ import {
   FacebookShareButton,
   TwitterShareButton,
 } from "react-share";
+import { getRandomActor } from "../factories/factories";
 
 import { EmailIcon, FacebookIcon, TwitterIcon } from "react-share";
 import HighScore from "./HighScore.jsx";
-
+require("dotenv").config();
 export class Quizz extends Component {
   state = {
     actorId: null,
@@ -43,9 +44,11 @@ export class Quizz extends Component {
     let randomPage = this.GetRandomNumber(1, 10);
 
     fetch(
-      `https://api.themoviedb.org/3/person/popular?api_key=f612a1c1b8e8916b830d3e17ec902406&language=en-US&page=${randomPage}`
+      `https://api.themoviedb.org/3/person/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=${randomPage}`
     )
       .then((apiRes) => {
+        console.log(process.env);
+        console.log("ici", apiRes);
         return apiRes.json();
       })
       .then((data) => {
@@ -64,7 +67,7 @@ export class Quizz extends Component {
   // GET A random MOVIE WITH THIS ACTOR
   getMovie(actorId) {
     fetch(
-      `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=f612a1c1b8e8916b830d3e17ec902406&language=en-US`
+      `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${process.env.REACT_APP_API_KEY}&language=en-US`
     )
       .then((apiRes) => {
         return apiRes.json();
@@ -95,7 +98,7 @@ export class Quizz extends Component {
       return null;
     } else {
       fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=f612a1c1b8e8916b830d3e17ec902406&language=en-US&page=1`
+        `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=1`
       )
         .then((apiRes) => {
           return apiRes.json();
@@ -127,7 +130,7 @@ export class Quizz extends Component {
     let randomPage = this.GetRandomNumber(1, 10);
 
     fetch(
-      `https://api.themoviedb.org/3/movie/popular?api_key=f612a1c1b8e8916b830d3e17ec902406&language=en-US&page=${randomPage}`
+      `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=${randomPage}`
     )
       .then((apiRes) => {
         return apiRes.json();
@@ -188,7 +191,7 @@ export class Quizz extends Component {
   //CHECK ANSWER
   checkAnswer(answer) {
     fetch(
-      `https://api.themoviedb.org/3/person/${this.state.actorId}/movie_credits?api_key=f612a1c1b8e8916b830d3e17ec902406&language=en-US`
+      `https://api.themoviedb.org/3/person/${this.state.actorId}/movie_credits?api_key=${process.env.REACT_APP_API_KEY}&language=en-US`
     )
       .then((apiRes) => {
         return apiRes.json();
@@ -206,8 +209,6 @@ export class Quizz extends Component {
         if (goodAnswer == answer) {
           let newScore = this.state.score + 1;
           this.setState({ score: newScore });
-        } else {
-          this.setState({ gameOver: true });
         }
         this.getRandomActor();
         this.getRandomMovie();
@@ -215,6 +216,10 @@ export class Quizz extends Component {
   }
 
   componentDidMount() {
+    setTimeout(() => {
+      this.setState({ gameOver: true });
+    }, 60000);
+
     this.getRandomActor();
     this.getRandomMovie();
   }
@@ -275,7 +280,7 @@ export class Quizz extends Component {
         {gameOver == true && (
           <div className="gameOver">
             <div className="gameOverText">
-              <h1>Game Over</h1>
+              <h1>Game Over !</h1>
               <h3>score : {this.state.score}</h3>
               <div className="shareBtns">
                 <EmailShareButton>

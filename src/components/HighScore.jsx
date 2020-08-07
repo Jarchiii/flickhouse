@@ -6,22 +6,24 @@ function HighScore({ score }) {
 
   useEffect(() => {
     let newHighScore = [...highScore];
-    let newScore = score;
-    newHighScore.push(newScore);
-    newHighScore.sort(function (a, b) {
-      return b - a;
-    });
-    setHighScore(newHighScore);
+    if (score > 0) {
+      let newScore = score;
+      newHighScore.push(newScore);
+      newHighScore.sort(function (a, b) {
+        return b - a;
+      });
+      setHighScore(newHighScore);
+    }
     return () => {};
   }, []);
 
   return (
-    <div>
+    <div className="highScore">
       <h5>High Scores : </h5>
       {highScore.map((score, index) => {
         return (
           <div>
-            {index + 1} : {score}
+            ({index + 1}) : {score} pts
           </div>
         );
       })}
